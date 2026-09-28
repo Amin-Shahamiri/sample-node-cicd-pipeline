@@ -8,7 +8,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).send('OK', Date.now());
 });
 
 if (process.env.NODE_ENV !== 'test') {
