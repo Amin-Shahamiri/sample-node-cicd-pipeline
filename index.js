@@ -8,7 +8,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).send('OK', Date.now());
+  res.status(200).json({
+    status: 'OK',
+    timestamp: Date.now()
+  });
 });
 
 if (process.env.NODE_ENV !== 'test') {
