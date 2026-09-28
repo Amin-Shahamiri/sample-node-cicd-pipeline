@@ -53,11 +53,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
       - name: Deploy to Staging
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: ./scripts/deploy.sh staging "$IMAGE"
 
       - name: Execute Smoke Tests
-        run: ./scripts/smoke-test.sh https://staging.example.com
+        run: ./scripts/smoke-test.sh https://amin-test.duckdns.org
 
   deploy-production:
     needs: [prep, deploy-staging]
@@ -69,5 +79,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
       - name: Deploy to Production
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: ./scripts/deploy.sh production "$IMAGE"
+
+      - name: Execute Smoke Tests
+        run: ./scripts/smoke-test.sh https://amin-prod.duckdns.org
